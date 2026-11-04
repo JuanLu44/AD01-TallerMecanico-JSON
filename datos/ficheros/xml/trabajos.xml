@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<trabajos>
+    <trabajo cliente="11223344B" fechaFin="07/03/2024" fechaInicio="01/03/2024" horas="10" tipo="revision" vehiculo="3333DDD"/>
+    <trabajo cliente="11111111H" fechaFin="14/03/2024" fechaInicio="10/03/2024" tipo="revision" vehiculo="1111BBB"/>
+    <trabajo cliente="11223344B" fechaFin="16/03/2024" fechaInicio="10/03/2024" horas="5" tipo="mecanico" vehiculo="1234BCD"/>
+    <trabajo cliente="11111111H" fechaInicio="15/03/2024" precioMaterial="125.500000" tipo="mecanico" vehiculo="2222CCC"/>
+    <trabajo cliente="11223344B" fechaFin="21/10/2025" fechaInicio="21/10/2025" tipo="mecanico" vehiculo="1234BCD"/>
+</trabajos>

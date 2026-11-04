@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="1200.0" spacing="20.0" stylesheets="@../estilos/ventanas.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.iesalandalus.programacion.tallermecanico.vista.ventanas.controladores.MostrarTrabajos">
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+   <children>
+       <Label style="-fx-font-size: 25;" text="Trabajos" />
+       <TableView fx:id="tvTrabajos">
+        <columns>
+            <TableColumn fx:id="tcFechaAlquiler" prefWidth="89.0" style="-fx-alignment: center;" text="F. Inicio" />
+            <TableColumn fx:id="tcFechaDevolucion" prefWidth="94.0" style="-fx-alignment: center;" text="F. Fin" />
+            <TableColumn fx:id="tcNombre" prefWidth="125.0" text="Nombre" />
+            <TableColumn fx:id="tcDni" prefWidth="92.0" text="DNI" />
+            <TableColumn fx:id="tcTelefono" prefWidth="85.0" text="Teléfono" />
+          <TableColumn fx:id="tcMarca" prefWidth="122.0" text="Marca" />
+          <TableColumn fx:id="tcModelo" prefWidth="142.0" text="Modelo" />
+            <TableColumn fx:id="tcMatricula" prefWidth="82.0" style="-fx-alignment: center;" text="Matricula" />
+            <TableColumn fx:id="tcTipo" prefWidth="87.0" style="-fx-alignment: center;" text="Tipo" />
+            <TableColumn fx:id="tcHoras" prefWidth="56.0" style="-fx-alignment: center-right;" text="Horas" />
+            <TableColumn fx:id="tcPrecioMaterial" prefWidth="114.0" style="-fx-alignment: center-right;" text="Precio Material" />
+            <TableColumn fx:id="tcPrecio" prefWidth="69.0" style="-fx-alignment: center-right;" text="Precio" />
+        </columns>
+      </TableView>
+      <HBox alignment="CENTER" minHeight="30.0" prefHeight="30.0" prefWidth="913.0" spacing="20.0">
+         <children>
+            <Button id="btAceptar" mnemonicParsing="false" onAction="#anadir" text="Añadir Trabajo" />
+            <Button fx:id="btBorrar" disable="true" mnemonicParsing="false" onAction="#borrar" text="Borrar Trabajo" />
+            <Button id="btCancelar" fx:id="btCerrar" disable="true" mnemonicParsing="false" onAction="#cerrar" text="Cerrar Trabajo" />
+            <Button id="btCancelar" fx:id="btAnadirHoras" disable="true" mnemonicParsing="false" onAction="#anadirHoras" text="Añadir Horas" />
+            <Button id="btCancelar" fx:id="btAnadirPrecioMaterial" disable="true" mnemonicParsing="false" onAction="#anadirPrecioMaterial" text="Añadir Precio Material" />
+            <Button id="btAceptar" defaultButton="true" mnemonicParsing="false" onAction="#aceptar" text="Aceptar" />
+         </children>
+      </HBox>
+   </children>
+</VBox>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="579.0" prefWidth="600.0" spacing="20.0" stylesheets="@../estilos/ventanas.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.iesalandalus.programacion.tallermecanico.vista.ventanas.controladores.MostrarEstadisticas">
+   <children>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+         <children>
+            <Label text="Elige el mes:" />
+            <DatePicker fx:id="dpMes" editable="false" onAction="#mesCambiado" />
+         </children>
+      </HBox>
+      <PieChart fx:id="pcGrafica" prefHeight="500.0" prefWidth="500.0" />
+      <Button id="btAceptar" defaultButton="true" mnemonicParsing="false" onAction="#aceptar" text="Aceptar" />
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>

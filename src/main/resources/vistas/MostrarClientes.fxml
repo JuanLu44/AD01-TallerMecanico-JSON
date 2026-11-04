@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="397.0" prefWidth="600.0" spacing="20.0" stylesheets="@../estilos/ventanas.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.iesalandalus.programacion.tallermecanico.vista.ventanas.controladores.MostrarClientes">
+   <children>
+      <Label style="-fx-font-size: 25;" text="Clientes" />
+      <TableView fx:id="tvClientes" prefHeight="200.0" prefWidth="200.0">
+        <columns>
+          <TableColumn fx:id="tcNombre" prefWidth="362.04612988233566" text="Nombre" />
+          <TableColumn fx:id="tcDni" minWidth="0.0" prefWidth="96.7451171875" style="-fx-alignment: center;" text="DNI" />
+            <TableColumn fx:id="tcTelefono" prefWidth="97.0" style="-fx-alignment: center;" text="Teléfono" />
+        </columns>
+      </TableView>
+      <Button id="btAceptar" defaultButton="true" mnemonicParsing="false" onAction="#aceptar" text="Aceptar" />
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>

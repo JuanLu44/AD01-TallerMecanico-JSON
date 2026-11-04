@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="1100.0" spacing="20.0" stylesheets="@../estilos/ventanas.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.iesalandalus.programacion.tallermecanico.vista.ventanas.controladores.MostrarTrabajo">
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+   <children>
+      <Label fx:id="lbTrabajo" style="-fx-font-size: 16;" text="Label">
+         <VBox.margin>
+            <Insets bottom="20.0" />
+         </VBox.margin></Label>
+      <HBox alignment="CENTER" minHeight="30.0" prefHeight="30.0" prefWidth="913.0" spacing="20.0">
+         <children>
+            <Button id="btCancelar" mnemonicParsing="false" onAction="#borrar" text="Borrar Trabajo" />
+            <Button id="btCancelar" fx:id="btCerrar" disable="true" mnemonicParsing="false" onAction="#cerrar" text="Cerrar Trabajo" />
+            <Button id="btCancelar" fx:id="btAnadirHoras" disable="true" mnemonicParsing="false" onAction="#anadirHoras" text="Añadir Horas" />
+            <Button id="btCancelar" fx:id="btAnadirPrecioMaterial" disable="true" mnemonicParsing="false" onAction="#anadirPrecioMaterial" text="Añadir Precio Material" />
+            <Button id="btAceptar" defaultButton="true" mnemonicParsing="false" onAction="#aceptar" text="Aceptar" />
+         </children>
+      </HBox>
+   </children>
+</VBox>

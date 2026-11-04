@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="387.0" prefWidth="953.0" spacing="20.0" stylesheets="@../estilos/ventanas.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.iesalandalus.programacion.tallermecanico.vista.ventanas.controladores.MostrarTrabajosVehiculo">
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+   <children>
+       <Label style="-fx-font-size: 25;" text="Trabajos del vehículo" />
+       <TableView fx:id="tvTrabajos">
+        <columns>
+            <TableColumn fx:id="tcFechaAlquiler" prefWidth="89.0" style="-fx-alignment: center;" text="F. Inicio" />
+            <TableColumn fx:id="tcFechaDevolucion" prefWidth="94.0" style="-fx-alignment: center;" text="F. Fin" />
+          <TableColumn fx:id="tcNombre" prefWidth="164.0" text="Nombre" />
+          <TableColumn fx:id="tcDni" prefWidth="124.0" text="DNI" />
+            <TableColumn fx:id="tcTelefono" prefWidth="94.0" style="-fx-alignment: center;" text="Teléfono" />
+            <TableColumn fx:id="tcTipo" prefWidth="79.0" style="-fx-alignment: center;" text="Tipo" />
+            <TableColumn fx:id="tcHoras" prefWidth="74.0" style="-fx-alignment: center-right;" text="Horas" />
+            <TableColumn fx:id="tcPrecioMaterial" prefWidth="117.0" style="-fx-alignment: center-right;" text="Precio Material" />
+            <TableColumn fx:id="tcPrecio" prefWidth="75.0" style="-fx-alignment: center-right;" text="Precio" />
+        </columns>
+      </TableView>
+      <HBox alignment="CENTER" minHeight="30.0" prefHeight="30.0" prefWidth="913.0" spacing="20.0">
+         <children>
+            <Button fx:id="btAnadir" mnemonicParsing="false" onAction="#anadir" text="Añadir Trabajo" />
+            <Button fx:id="btBorrar" disable="true" mnemonicParsing="false" onAction="#borrar" text="Borrar Trabajo" />
+            <Button id="btCancelar" fx:id="btCerrar" disable="true" mnemonicParsing="false" onAction="#cerrar" text="Cerrar Trabajo" />
+            <Button id="btCancelar" fx:id="btAnadirHoras" disable="true" mnemonicParsing="false" onAction="#anadirHoras" text="Añadir Horas" />
+            <Button id="btCancelar" fx:id="btAnadirPrecioMaterial" disable="true" mnemonicParsing="false" onAction="#anadirPrecioMaterial" text="Añadir Precio Material" />
+            <Button id="btAceptar" defaultButton="true" mnemonicParsing="false" onAction="#aceptar" text="Aceptar" />
+         </children>
+      </HBox>
+   </children>
+</VBox>
