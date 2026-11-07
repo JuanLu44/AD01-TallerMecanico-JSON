@@ -22,15 +22,12 @@ public class Vehiculos implements IVehiculos {
                     File.separator);
 
     private final ObjectMapper mapper;
-    private final List<Vehiculo> coleccionVehiculos;
 
     private static Vehiculos instancia;
 
     private Vehiculos() {
         mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
-
-        coleccionVehiculos = new ArrayList<>();
     }
 
     static Vehiculos getInstancia() {
@@ -53,14 +50,15 @@ public class Vehiculos implements IVehiculos {
 
     /**
      * Lee los vehículos almacenados en el fichero JSON.
+     *
+     * @return Lista de vehículos leídos.
      */
-    private void leer() {
+    private List<Vehiculo> leer() {
         File fichero = new File(FICHERO_VEHICULOS);
-
-        coleccionVehiculos.clear();
+        List<Vehiculo> vehiculos = new ArrayList<>();
 
         if (!fichero.exists()) {
-            return;
+            return vehiculos;
         }
 
         try {
@@ -70,7 +68,7 @@ public class Vehiculos implements IVehiculos {
             );
 
             if (vehiculosLeidos != null) {
-                coleccionVehiculos.addAll(vehiculosLeidos);
+                vehiculos.addAll(vehiculosLeidos);
             }
 
         } catch (IOException | RuntimeException e) {
@@ -79,12 +77,16 @@ public class Vehiculos implements IVehiculos {
                     e.getMessage()
             );
         }
+
+        return vehiculos;
     }
 
     /**
      * Guarda los vehículos en el fichero JSON.
+     *
+     * @param vehiculos Lista de vehículos que se va a guardar.
      */
-    private void escribir() {
+    private void escribir(List<Vehiculo> vehiculos) {
         File fichero = new File(FICHERO_VEHICULOS);
         File directorio = fichero.getParentFile();
 
@@ -93,7 +95,7 @@ public class Vehiculos implements IVehiculos {
                 throw new IOException("No se pudo crear el directorio.");
             }
 
-            mapper.writeValue(fichero, coleccionVehiculos);
+            mapper.writeValue(fichero, vehiculos);
 
         } catch (IOException e) {
             System.out.printf(
@@ -105,9 +107,7 @@ public class Vehiculos implements IVehiculos {
 
     @Override
     public List<Vehiculo> get() {
-        leer();
-
-        return new ArrayList<>(coleccionVehiculos);
+        return leer();
     }
 
     @Override
@@ -117,16 +117,16 @@ public class Vehiculos implements IVehiculos {
                 "No se puede insertar un vehículo nulo."
         );
 
-        leer();
+        List<Vehiculo> vehiculos = leer();
 
-        if (coleccionVehiculos.contains(vehiculo)) {
+        if (vehiculos.contains(vehiculo)) {
             throw new TallerMecanicoExcepcion(
                     "Ya existe un vehículo con esa matrícula."
             );
         }
 
-        coleccionVehiculos.add(vehiculo);
-        escribir();
+        vehiculos.add(vehiculo);
+        escribir(vehiculos);
     }
 
     @Override
@@ -136,11 +136,11 @@ public class Vehiculos implements IVehiculos {
                 "No se puede buscar un vehículo nulo."
         );
 
-        leer();
+        List<Vehiculo> vehiculos = leer();
 
-        int indice = coleccionVehiculos.indexOf(vehiculo);
+        int indice = vehiculos.indexOf(vehiculo);
 
-        return (indice == -1) ? null : coleccionVehiculos.get(indice);
+        return (indice == -1) ? null : vehiculos.get(indice);
     }
 
     @Override
@@ -150,15 +150,15 @@ public class Vehiculos implements IVehiculos {
                 "No se puede borrar un vehículo nulo."
         );
 
-        leer();
+        List<Vehiculo> vehiculos = leer();
 
-        if (!coleccionVehiculos.contains(vehiculo)) {
+        if (!vehiculos.contains(vehiculo)) {
             throw new TallerMecanicoExcepcion(
                     "No existe ningún vehículo con esa matrícula."
             );
         }
 
-        coleccionVehiculos.remove(vehiculo);
-        escribir();
+        vehiculos.remove(vehiculo);
+        escribir(vehiculos);
     }
 }

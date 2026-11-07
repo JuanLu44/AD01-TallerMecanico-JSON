@@ -101,16 +101,21 @@ public abstract class Trabajo {
         return fechaFin;
     }
 
+
     private void setFechaFin(LocalDate fechaFin) {
-        Objects.requireNonNull(fechaFin, "La fecha de fin no puede ser nula.");
-        if (fechaFin.isBefore(fechaInicio)) {
-            throw new IllegalArgumentException("La fecha de fin no puede ser anterior a la fecha de inicio.");
+        if (fechaFin != null) {
+            if (fechaFin.isBefore(fechaInicio)) {
+                throw new IllegalArgumentException("La fecha de fin no puede ser anterior a la fecha de inicio.");
+            }
+
+            if (fechaFin.isAfter(LocalDate.now())) {
+                throw new IllegalArgumentException("La fecha de fin no puede ser futura.");
+            }
         }
-        if (fechaFin.isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("La fecha de fin no puede ser futura.");
-        }
+
         this.fechaFin = fechaFin;
     }
+
 
     public int getHoras() {
         return horas;

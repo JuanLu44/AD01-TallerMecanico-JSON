@@ -21,7 +21,6 @@ public class Trabajos implements ITrabajos {
                     "datos", File.separator, File.separator, File.separator);
 
     private final ObjectMapper mapper;
-    private final List<Trabajo> coleccionTrabajos;
 
     private static Trabajos instancia;
 
@@ -29,14 +28,13 @@ public class Trabajos implements ITrabajos {
         mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
-
-        coleccionTrabajos = new ArrayList<>();
     }
 
     static Trabajos getInstancia() {
         if (instancia == null) {
             instancia = new Trabajos();
         }
+
         return instancia;
     }
 
@@ -52,14 +50,15 @@ public class Trabajos implements ITrabajos {
 
     /**
      * Lee los trabajos almacenados en el fichero JSON.
+     *
+     * @return Lista de trabajos leídos.
      */
-    private void leer() {
+    private List<Trabajo> leer() {
         File fichero = new File(FICHERO_TRABAJOS);
-
-        coleccionTrabajos.clear();
+        List<Trabajo> trabajos = new ArrayList<>();
 
         if (!fichero.exists()) {
-            return;
+            return trabajos;
         }
 
         try {
@@ -69,7 +68,7 @@ public class Trabajos implements ITrabajos {
             );
 
             if (trabajosLeidos != null) {
-                coleccionTrabajos.addAll(trabajosLeidos);
+                trabajos.addAll(trabajosLeidos);
             }
 
         } catch (IOException | RuntimeException e) {
@@ -78,12 +77,17 @@ public class Trabajos implements ITrabajos {
                     e.getMessage()
             );
         }
+
+        return trabajos;
     }
 
     /**
      * Guarda los trabajos en el fichero JSON.
+     *
+     * @param trabajos Lista de trabajos que se va a guardar.
      */
-    private void escribir() {
+
+    private void escribir(List<Trabajo> trabajos) {
         File fichero = new File(FICHERO_TRABAJOS);
         File directorio = fichero.getParentFile();
 
@@ -92,7 +96,8 @@ public class Trabajos implements ITrabajos {
                 throw new IOException("No se pudo crear el directorio.");
             }
 
-            mapper.writeValue(fichero, coleccionTrabajos);
+            mapper.writerFor(new TypeReference<List<Trabajo>>() {})
+                    .writeValue(fichero, trabajos);
 
         } catch (IOException e) {
             System.out.printf(
@@ -102,10 +107,10 @@ public class Trabajos implements ITrabajos {
         }
     }
 
+
     @Override
     public List<Trabajo> get() {
-        leer();
-        return new ArrayList<>(coleccionTrabajos);
+        return leer();
     }
 
     @Override
@@ -180,25 +185,27 @@ public class Trabajos implements ITrabajos {
                 "No se puede insertar un trabajo nulo."
         );
 
-        leer();
+        List<Trabajo> trabajos = leer();
 
         comprobarTrabajo(
+                trabajos,
                 trabajo.getCliente(),
                 trabajo.getVehiculo(),
                 trabajo.getFechaInicio()
         );
 
-        coleccionTrabajos.add(trabajo);
-        escribir();
+        trabajos.add(trabajo);
+        escribir(trabajos);
     }
 
     private void comprobarTrabajo(
+            List<Trabajo> trabajos,
             Cliente cliente,
             Vehiculo vehiculo,
             LocalDate fechaInicio
     ) throws TallerMecanicoExcepcion {
 
-        for (Trabajo trabajo : coleccionTrabajos) {
+        for (Trabajo trabajo : trabajos) {
             if (!trabajo.estaCerrado()) {
 
                 if (trabajo.getCliente().equals(cliente)) {
@@ -241,20 +248,23 @@ public class Trabajos implements ITrabajos {
                 "No puedo añadir horas a un trabajo nulo."
         );
 
-        leer();
+        List<Trabajo> trabajos = leer();
 
         Trabajo trabajoEncontrado = getTrabajoAbierto(
+                trabajos,
                 trabajo.getVehiculo()
         );
 
         trabajoEncontrado.anadirHoras(horas);
-        escribir();
+        escribir(trabajos);
 
         return trabajoEncontrado;
     }
 
-    private Trabajo getTrabajoAbierto(Vehiculo vehiculo)
-            throws TallerMecanicoExcepcion {
+    private Trabajo getTrabajoAbierto(
+            List<Trabajo> trabajos,
+            Vehiculo vehiculo
+    ) throws TallerMecanicoExcepcion {
 
         Objects.requireNonNull(
                 vehiculo,
@@ -263,8 +273,7 @@ public class Trabajos implements ITrabajos {
 
         Trabajo trabajoEncontrado = null;
 
-        Iterator<Trabajo> iteradorTrabajos =
-                coleccionTrabajos.iterator();
+        Iterator<Trabajo> iteradorTrabajos = trabajos.iterator();
 
         while (iteradorTrabajos.hasNext() && trabajoEncontrado == null) {
             Trabajo trabajo = iteradorTrabajos.next();
@@ -296,9 +305,10 @@ public class Trabajos implements ITrabajos {
                 "No puedo añadir precio del material a un trabajo nulo."
         );
 
-        leer();
+        List<Trabajo> trabajos = leer();
 
         Trabajo trabajoEncontrado = getTrabajoAbierto(
+                trabajos,
                 trabajo.getVehiculo()
         );
 
@@ -311,7 +321,7 @@ public class Trabajos implements ITrabajos {
             );
         }
 
-        escribir();
+        escribir(trabajos);
 
         return trabajoEncontrado;
     }
@@ -325,14 +335,15 @@ public class Trabajos implements ITrabajos {
                 "No puedo cerrar un trabajo nulo."
         );
 
-        leer();
+        List<Trabajo> trabajos = leer();
 
         Trabajo trabajoEncontrado = getTrabajoAbierto(
+                trabajos,
                 trabajo.getVehiculo()
         );
 
         trabajoEncontrado.cerrar(fechaFin);
-        escribir();
+        escribir(trabajos);
 
         return trabajoEncontrado;
     }
@@ -344,11 +355,11 @@ public class Trabajos implements ITrabajos {
                 "No se puede buscar un trabajo nulo."
         );
 
-        leer();
+        List<Trabajo> trabajos = leer();
 
-        int indice = coleccionTrabajos.indexOf(trabajo);
+        int indice = trabajos.indexOf(trabajo);
 
-        return (indice == -1) ? null : coleccionTrabajos.get(indice);
+        return (indice == -1) ? null : trabajos.get(indice);
     }
 
     @Override
@@ -358,16 +369,15 @@ public class Trabajos implements ITrabajos {
                 "No se puede borrar un trabajo nulo."
         );
 
-        leer();
+        List<Trabajo> trabajos = leer();
 
-        if (!coleccionTrabajos.contains(trabajo)) {
+        if (!trabajos.contains(trabajo)) {
             throw new TallerMecanicoExcepcion(
                     "No existe ningún trabajo igual."
             );
         }
 
-        coleccionTrabajos.remove(trabajo);
-        escribir();
+        trabajos.remove(trabajo);
+        escribir(trabajos);
     }
 }
-

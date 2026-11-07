@@ -33,6 +33,9 @@ public class VistaVentanas implements Vista {
     private MostrarVehiculos mostrarVehiculos;
     private MostrarTrabajos mostrarTrabajos;
 
+    private Cliente clienteTrabajos;
+    private Vehiculo vehiculoTrabajos;
+
     private VistaVentanas() {
     }
 
@@ -59,6 +62,14 @@ public class VistaVentanas implements Vista {
 
     public List<Vehiculo> getVehiculos() {
         return mostrarVehiculos.getVehiculos();
+    }
+
+    public Cliente getClienteTrabajos() {
+        return clienteTrabajos;
+    }
+
+    public Vehiculo getVehiculoTrabajos() {
+        return vehiculoTrabajos;
     }
 
     @Override
@@ -120,8 +131,8 @@ public class VistaVentanas implements Vista {
     public Trabajo leerRevision() {
         LeerTrabajo leerTrabajo = (LeerTrabajo) Controladores.get("/vistas/LeerTrabajo.fxml", "Leer Trabajo", ventanaPrincipal.getEscenario());
         LeerTrabajoBuscar leerTrabajoBuscar = (LeerTrabajoBuscar) Controladores.get("/vistas/LeerTrabajoBuscar.fxml", "Buscar Trabajo", ventanaPrincipal.getEscenario());
-        //System.out.println(leerTrabajo.getEscenario().isShowing());
-        Trabajo trabajo =  null;
+
+        Trabajo trabajo = null;
         if (mostrarTrabajos.getEscenario().isShowing()) {
             trabajo = mostrarTrabajos.getTrabajo();
         } else if (leerTrabajo.getEscenario().isShowing()) {
@@ -149,7 +160,7 @@ public class VistaVentanas implements Vista {
 
     @Override
     public float leerPrecioMaterial() {
-        return mostrarTrabajos.getEscenario().isShowing() ? mostrarTrabajos.getPrecioMaterial() :  mostrarTrabajo.getPrecioMaterial();
+        return mostrarTrabajos.getEscenario().isShowing() ? mostrarTrabajos.getPrecioMaterial() : mostrarTrabajo.getPrecioMaterial();
     }
 
     @Override
@@ -160,7 +171,7 @@ public class VistaVentanas implements Vista {
 
     @Override
     public LocalDate leerMes() {
-        MostrarEstadisticas mostrarEstadisticas = (MostrarEstadisticas) Controladores.get("/vistas/MostrarEstadisticas.fxml", "Mostrar estadísticas",  ventanaPrincipal.getEscenario());
+        MostrarEstadisticas mostrarEstadisticas = (MostrarEstadisticas) Controladores.get("/vistas/MostrarEstadisticas.fxml", "Mostrar estadísticas", ventanaPrincipal.getEscenario());
         return mostrarEstadisticas.getMes();
     }
 
@@ -206,6 +217,26 @@ public class VistaVentanas implements Vista {
 
     @Override
     public void mostrarTrabajos(List<Trabajo> trabajos) {
+        clienteTrabajos = null;
+        vehiculoTrabajos = null;
+        actualizarVentanaTrabajos(trabajos);
+    }
+
+    @Override
+    public void mostrarTrabajos(List<Trabajo> trabajos, Cliente cliente) {
+        clienteTrabajos = cliente;
+        vehiculoTrabajos = null;
+        actualizarVentanaTrabajos(trabajos);
+    }
+
+    @Override
+    public void mostrarTrabajos(List<Trabajo> trabajos, Vehiculo vehiculo) {
+        vehiculoTrabajos = vehiculo;
+        clienteTrabajos = null;
+        actualizarVentanaTrabajos(trabajos);
+    }
+
+    private void actualizarVentanaTrabajos(List<Trabajo> trabajos) {
         if (!trabajosLeidos) {
             trabajosLeidos = true;
             mostrarTrabajos.actualizar(trabajos);
@@ -217,10 +248,9 @@ public class VistaVentanas implements Vista {
 
     @Override
     public void mostrarEstadisticasMensuales(Map<TipoTrabajo, Integer> estadisticas) {
-        MostrarEstadisticas mostrarEstadisticas = (MostrarEstadisticas) Controladores.get("/vistas/MostrarEstadisticas.fxml", "Mostrar estadísticas",  ventanaPrincipal.getEscenario());
+        MostrarEstadisticas mostrarEstadisticas = (MostrarEstadisticas) Controladores.get("/vistas/MostrarEstadisticas.fxml", "Mostrar estadísticas", ventanaPrincipal.getEscenario());
         mostrarEstadisticas.setEstadisticas(estadisticas);
     }
-
 
     @Override
     public void notificarResultado(Evento evento, String texto, boolean exito) {
@@ -264,11 +294,13 @@ public class VistaVentanas implements Vista {
     public void notificarResultado(Evento evento, String texto, boolean exito, Trabajo trabajo) {
         switch (evento) {
             case INSERTAR_MECANICO, INSERTAR_REVISION -> mostrarTrabajos.getTrabajos().add(trabajo);
-            case ANADIR_HORAS_TRABAJO, ANADIR_PRECIO_MATERIAL_TRABAJO, CERRAR_TRABAJO -> { mostrarTrabajo.actualizar(trabajo); mostrarTrabajos.actualizar(trabajo); }
+            case ANADIR_HORAS_TRABAJO, ANADIR_PRECIO_MATERIAL_TRABAJO, CERRAR_TRABAJO -> {
+                mostrarTrabajo.actualizar(trabajo);
+                mostrarTrabajos.actualizar(trabajo);
+            }
             case BORRAR_TRABAJO -> mostrarTrabajos.getTrabajos().remove(trabajo);
             default -> throw new IllegalArgumentException("El evento debe estar referido a un trabajo.");
         }
         notificarResultado(evento, texto, exito);
     }
-
 }

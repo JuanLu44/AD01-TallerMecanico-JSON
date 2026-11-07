@@ -9,9 +9,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Cliente;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Mecanico;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.TipoTrabajo;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Trabajo;
+import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Vehiculo;
 import org.iesalandalus.programacion.tallermecanico.vista.eventos.Evento;
 import org.iesalandalus.programacion.tallermecanico.vista.ventanas.VistaVentanas;
 import org.iesalandalus.programacion.tallermecanico.vista.ventanas.utilidades.Controlador;
@@ -41,7 +43,6 @@ public class MostrarTrabajos extends Controlador {
 	@FXML private TableColumn<Trabajo, Integer> tcHoras;
 	@FXML private TableColumn<Trabajo, String> tcPrecioMaterial;
 	@FXML private TableColumn<Trabajo, Float> tcPrecio;
-
 
 	private ObservableList<Trabajo> trabajos;
 	private int horas;
@@ -85,7 +86,9 @@ public class MostrarTrabajos extends Controlador {
 			horas = 0;
 			try {
 				horas = Integer.parseInt(cadenaHoras);
-			} catch (NumberFormatException nfe) {/**/}
+			} catch (NumberFormatException nfe) {
+				// Entrada no válida.
+			}
 			VistaVentanas.getInstancia().getGestorEventos().notificar(Evento.ANADIR_HORAS_TRABAJO);
 		}
 	}
@@ -97,7 +100,9 @@ public class MostrarTrabajos extends Controlador {
 			precioMaterial = 0;
 			try {
 				precioMaterial = Float.parseFloat(cadenaPrecioMaterial);
-			} catch (NumberFormatException nfe) {/**/}
+			} catch (NumberFormatException nfe) {
+				// Entrada no válida.
+			}
 			VistaVentanas.getInstancia().getGestorEventos().notificar(Evento.ANADIR_PRECIO_MATERIAL_TRABAJO);
 		}
 	}
@@ -111,17 +116,27 @@ public class MostrarTrabajos extends Controlador {
 
 	@FXML
 	void anadir() {
-		LeerTrabajo leerTrabajo = (LeerTrabajo) Controladores.get("/vistas/LeerTrabajo.fxml", "Añadir Trabajo", getEscenario());
-		leerTrabajo.setClientes(VistaVentanas.getInstancia().getClientes());
-		leerTrabajo.setVehiculos(VistaVentanas.getInstancia().getVehiculos());
+		LeerTrabajo leerTrabajo = (LeerTrabajo) Controladores.get(
+				"/vistas/LeerTrabajo.fxml",
+				"Añadir Trabajo",
+				getEscenario()
+		);
+
+		VistaVentanas vista = VistaVentanas.getInstancia();
+
 		leerTrabajo.limpiar();
-		MostrarCliente mostrarCliente = (MostrarCliente) Controladores.get("/vistas/MostrarCliente.fxml", "Mostrar cliente", getEscenario());
-		MostrarVehiculo mostrarVehiculo = (MostrarVehiculo) Controladores.get("/vistas/MostrarVehiculo.fxml", "Mostrar vehiculo", getEscenario());
-		if (mostrarCliente.getEscenario().isShowing()) {
-			leerTrabajo.setCliente(mostrarCliente.getCliente());
-		} else {
-			leerTrabajo.setVehiculo(mostrarVehiculo.getVehiculo());
+		leerTrabajo.setClientes(vista.getClientes());
+		leerTrabajo.setVehiculos(vista.getVehiculos());
+
+		Cliente cliente = vista.getClienteTrabajos();
+		Vehiculo vehiculo = vista.getVehiculoTrabajos();
+
+		if (cliente != null) {
+			leerTrabajo.setCliente(cliente);
+		} else if (vehiculo != null) {
+			leerTrabajo.setVehiculo(vehiculo);
 		}
+
 		leerTrabajo.getEscenario().showAndWait();
 	}
 
@@ -134,7 +149,9 @@ public class MostrarTrabajos extends Controlador {
 
 	public Trabajo getTrabajo() {
 		LeerTrabajo leerTrabajo = (LeerTrabajo) Controladores.get("/vistas/LeerTrabajo.fxml", "Añadir Trabajo", getEscenario());
-		return (leerTrabajo.getEscenario().isShowing()) ? leerTrabajo.getTrabajo() : tvTrabajos.getSelectionModel().getSelectedItem();
+		return leerTrabajo.getEscenario().isShowing()
+				? leerTrabajo.getTrabajo()
+				: tvTrabajos.getSelectionModel().getSelectedItem();
 	}
 
 	public int getHoras() {
@@ -156,7 +173,7 @@ public class MostrarTrabajos extends Controlador {
 		this.trabajos = FXCollections.observableArrayList(trabajos);
 		tvTrabajos.setItems(this.trabajos);
 		tvTrabajos.refresh();
-    }
+	}
 
 	public void actualizar(Trabajo trabajo) {
 		int indiceTrabajo = trabajos.indexOf(trabajo);
@@ -168,5 +185,4 @@ public class MostrarTrabajos extends Controlador {
 	public ObservableList<Trabajo> getTrabajos() {
 		return trabajos;
 	}
-
 }

@@ -25,7 +25,6 @@ public class Clientes implements IClientes {
                     File.separator);
 
     private final ObjectMapper mapper;
-    private final List<Cliente> coleccionClientes;
 
     private static Clientes instancia;
 
@@ -39,8 +38,6 @@ public class Clientes implements IClientes {
                 PropertyAccessor.FIELD,
                 JsonAutoDetect.Visibility.ANY
         );
-
-        coleccionClientes = new ArrayList<>();
     }
 
     static Clientes getInstancia() {
@@ -63,14 +60,15 @@ public class Clientes implements IClientes {
 
     /**
      * Lee los clientes almacenados en el fichero JSON.
+     *
+     * @return Lista de clientes leídos.
      */
-    private void leer() {
+    private List<Cliente> leer() {
         File fichero = new File(FICHERO_CLIENTES);
-
-        coleccionClientes.clear();
+        List<Cliente> clientes = new ArrayList<>();
 
         if (!fichero.exists()) {
-            return;
+            return clientes;
         }
 
         try {
@@ -80,7 +78,7 @@ public class Clientes implements IClientes {
             );
 
             if (clientesLeidos != null) {
-                coleccionClientes.addAll(clientesLeidos);
+                clientes.addAll(clientesLeidos);
             }
 
         } catch (IOException | RuntimeException e) {
@@ -89,12 +87,16 @@ public class Clientes implements IClientes {
                     e.getMessage()
             );
         }
+
+        return clientes;
     }
 
     /**
      * Guarda los clientes en el fichero JSON.
+     *
+     * @param clientes Lista de clientes que se va a guardar.
      */
-    private void escribir() {
+    private void escribir(List<Cliente> clientes) {
         File fichero = new File(FICHERO_CLIENTES);
         File directorio = fichero.getParentFile();
 
@@ -103,7 +105,7 @@ public class Clientes implements IClientes {
                 throw new IOException("No se pudo crear el directorio.");
             }
 
-            mapper.writeValue(fichero, coleccionClientes);
+            mapper.writeValue(fichero, clientes);
 
         } catch (IOException e) {
             System.out.printf(
@@ -115,9 +117,7 @@ public class Clientes implements IClientes {
 
     @Override
     public List<Cliente> get() {
-        leer();
-
-        return new ArrayList<>(coleccionClientes);
+        return leer();
     }
 
     @Override
@@ -127,16 +127,16 @@ public class Clientes implements IClientes {
                 "No se puede insertar un cliente nulo."
         );
 
-        leer();
+        List<Cliente> clientes = leer();
 
-        if (coleccionClientes.contains(cliente)) {
+        if (clientes.contains(cliente)) {
             throw new TallerMecanicoExcepcion(
                     "Ya existe un cliente con ese DNI."
             );
         }
 
-        coleccionClientes.add(cliente);
-        escribir();
+        clientes.add(cliente);
+        escribir(clientes);
     }
 
     @Override
@@ -151,9 +151,9 @@ public class Clientes implements IClientes {
                 "No se puede modificar un cliente nulo."
         );
 
-        leer();
+        List<Cliente> clientes = leer();
 
-        int indice = coleccionClientes.indexOf(cliente);
+        int indice = clientes.indexOf(cliente);
 
         if (indice == -1) {
             throw new TallerMecanicoExcepcion(
@@ -161,7 +161,7 @@ public class Clientes implements IClientes {
             );
         }
 
-        Cliente clienteEncontrado = coleccionClientes.get(indice);
+        Cliente clienteEncontrado = clientes.get(indice);
 
         if (nombre != null && !nombre.isBlank()) {
             clienteEncontrado.setNombre(nombre);
@@ -171,7 +171,7 @@ public class Clientes implements IClientes {
             clienteEncontrado.setTelefono(telefono);
         }
 
-        escribir();
+        escribir(clientes);
 
         return clienteEncontrado;
     }
@@ -183,11 +183,11 @@ public class Clientes implements IClientes {
                 "No se puede buscar un cliente nulo."
         );
 
-        leer();
+        List<Cliente> clientes = leer();
 
-        int indice = coleccionClientes.indexOf(cliente);
+        int indice = clientes.indexOf(cliente);
 
-        return (indice == -1) ? null : coleccionClientes.get(indice);
+        return (indice == -1) ? null : clientes.get(indice);
     }
 
     @Override
@@ -197,15 +197,15 @@ public class Clientes implements IClientes {
                 "No se puede borrar un cliente nulo."
         );
 
-        leer();
+        List<Cliente> clientes = leer();
 
-        if (!coleccionClientes.contains(cliente)) {
+        if (!clientes.contains(cliente)) {
             throw new TallerMecanicoExcepcion(
                     "No existe ningún cliente con ese DNI."
             );
         }
 
-        coleccionClientes.remove(cliente);
-        escribir();
+        clientes.remove(cliente);
+        escribir(clientes);
     }
 }
