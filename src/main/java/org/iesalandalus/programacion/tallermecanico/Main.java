@@ -8,25 +8,45 @@ import org.iesalandalus.programacion.tallermecanico.modelo.negocio.FabricaFuente
 import org.iesalandalus.programacion.tallermecanico.vista.FabricaVista;
 
 public class Main {
+
     public static void main(String[] args) {
-        Pair<FabricaVista, FabricaFuenteDatos> fabricas = procesarArgumentos(args);
-        IControlador controlador = new Controlador(FabricaModelo.CASCADA, fabricas.getValue(), fabricas.getKey());
+        Pair<FabricaVista, FabricaFuenteDatos> fabricas =
+                procesarArgumentos(args);
+
+        IControlador controlador = new Controlador(
+                FabricaModelo.CASCADA,
+                fabricas.getValue(),
+                fabricas.getKey()
+        );
+
         controlador.comenzar();
     }
 
-    private static Pair<FabricaVista, FabricaFuenteDatos> procesarArgumentos(String[] args) {
+    private static Pair<FabricaVista, FabricaFuenteDatos> procesarArgumentos(
+            String[] args) {
+
         FabricaVista fabricaVista = FabricaVista.VENTANAS;
-        FabricaFuenteDatos fabricaFuenteDatos = FabricaFuenteDatos.FICHEROS_XML;
+
+        // JSON será la fuente de datos predeterminada.
+        FabricaFuenteDatos fabricaFuenteDatos =
+                FabricaFuenteDatos.FICHEROS_JSON;
+
         for (String argumento : args) {
+
             if (argumento.equalsIgnoreCase("-vventanas")) {
                 fabricaVista = FabricaVista.VENTANAS;
+
             } else if (argumento.equalsIgnoreCase("-vtexto")) {
                 fabricaVista = FabricaVista.TEXTO;
+
             } else if (argumento.equalsIgnoreCase("-fdficherosxml")) {
                 fabricaFuenteDatos = FabricaFuenteDatos.FICHEROS_XML;
-            }
 
+            } else if (argumento.equalsIgnoreCase("-fdficherosjson")) {
+                fabricaFuenteDatos = FabricaFuenteDatos.FICHEROS_JSON;
+            }
         }
+
         return new Pair<>(fabricaVista, fabricaFuenteDatos);
     }
 }
